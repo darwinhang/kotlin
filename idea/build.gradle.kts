@@ -97,6 +97,7 @@ dependencies {
     compileOnly(intellijPluginDep("java-i18n"))
     compileOnly(intellijPluginDep("gradle"))
 
+    testCompileOnly(toolsJar())
     testCompileOnly(project(":kotlin-reflect-api")) // TODO: fix import (workaround for jps build)
     testCompile(project(":kotlin-test:kotlin-test-junit"))
     testCompile(projectTests(":compiler:tests-common"))
