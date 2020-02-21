@@ -237,10 +237,11 @@ class ResolvedAtomCompleter(
 
             throw AssertionError("No type for resolved lambda argument: ${ktArgumentExpression.text}")
         }
+        val substitutedReceiver = lambda.receiver?.let { resultSubstitutor.safeSubstitute(it) }
         val substitutedFunctionalType = createFunctionType(
             builtIns,
             existingLambdaType.annotations,
-            lambda.receiver?.let { resultSubstitutor.safeSubstitute(it) },
+            substitutedReceiver,
             lambda.parameters.map { resultSubstitutor.safeSubstitute(it) },
             null, // parameter names transforms to special annotations, so they are already taken from parameter types
             returnType,
@@ -257,10 +258,9 @@ class ResolvedAtomCompleter(
             }
 
             val valueType = receiver.value.type.unwrap()
-            val newValueType = resultSubstitutor.safeSubstitute(valueType)
 
-            if (valueType !== newValueType) {
-                val newReceiverValue = receiver.value.replaceType(newValueType)
+            if (substitutedReceiver != null && valueType !== substitutedReceiver) {
+                val newReceiverValue = receiver.value.replaceType(substitutedReceiver)
                 functionDescriptor.setExtensionReceiverParameter(
                     ReceiverParameterDescriptorImpl(receiver.containingDeclaration, newReceiverValue, receiver.annotations)
                 )

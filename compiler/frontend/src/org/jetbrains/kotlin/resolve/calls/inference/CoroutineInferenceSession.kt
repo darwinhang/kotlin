@@ -105,7 +105,9 @@ class CoroutineInferenceSession(
         lambda: ResolvedLambdaAtom,
         initialStorage: ConstraintStorage,
         diagnosticsHolder: KotlinDiagnosticsHolder
-    ): Map<TypeConstructor, UnwrappedType> {
+    ): Map<TypeConstructor, UnwrappedType>? {
+        if (partiallyResolvedCallsInfo.isEmpty() && commonCalls.isEmpty()) return null
+
         val commonSystem = buildCommonSystem(initialStorage)
 
         val context = commonSystem.asConstraintSystemCompleterContext()
